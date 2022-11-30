@@ -1,0 +1,11 @@
+<div class="container my-5">
+  <div class="row">
+    <div class="col-6">
+      <input [(ngModel)]="username" class="form-control" />
+      <p class="my-3">{{ username }}</p>
+      <button [disabled]="isDisabled()" (click)="onClick()" class="btn btn-primary">
+        Reset
+      </button>
+    </div>
+  </div>
+</div>
