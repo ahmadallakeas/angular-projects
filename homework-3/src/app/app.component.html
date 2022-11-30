@@ -1,0 +1,18 @@
+<div class="container my-5">
+  <div class="row">
+    <div class="col-6">
+      <button class="btn btn-primary" (click)="onClick($event)">
+        Display Details
+      </button>
+      <p class="my-3" *ngIf="display">Display working?</p>
+      <p
+        class="my-3"
+        [ngStyle]="{ 'background-color': getColor(i) }"
+        [ngClass]="{ 'index-5': i > 3 }"
+        *ngFor="let click of clicks; index as i"
+      >
+        {{ click }}
+      </p>
+    </div>
+  </div>
+</div>
