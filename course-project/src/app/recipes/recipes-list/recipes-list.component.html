@@ -5,27 +5,7 @@
 </div>
 <hr>
 <div class="row">
-  <div class="col-xs-12">
-    <a
-      *ngFor="let recipe of recepies"
-      href="#"
-      class="list-group-item clearfix"
-      style="padding: 3px;"
-    >
-      <div class="row">
-        <div class="col-6">
-          <h4 class="list-group-item-heading">{{ recipe.name }}</h4>
-          <p class="list-group-item-text">{{ recipe.description }}</p>
-        </div>
-        <div class="col-6">
-          <img
-            [src]="recipe.imageUrl"
-            alt=""
-            class="img-fluid"
-          />
-        </div>
-      </div>
-    </a>
-    <app-recipe-item></app-recipe-item>
+  <div class="col-xs-12 list-group">
+    <app-recipe-item *ngFor="let recipeItem of recepies" [recipe]="recipeItem" (recipeClick)="onRecipeCLicked(recipeItem)"></app-recipe-item>
   </div>
 </div>
