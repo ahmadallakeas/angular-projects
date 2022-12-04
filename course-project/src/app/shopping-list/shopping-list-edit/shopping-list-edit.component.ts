@@ -1,21 +1,29 @@
-import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { Ingredient } from 'src/app/shared/ingredient.model';
+import { ShoppingListService } from '../shopping-list.service';
 
 @Component({
   selector: 'app-shopping-list-edit',
   templateUrl: './shopping-list-edit.component.html',
-  styleUrls: ['./shopping-list-edit.component.css']
+  styleUrls: ['./shopping-list-edit.component.css'],
 })
 export class ShoppingListEditComponent {
-  @ViewChild('nameInput', {static: true}) nameInputRef: ElementRef;
-  @ViewChild('numberInput', {static: true}) numberInputRef: ElementRef;
+  @ViewChild('nameInput', { static: true }) nameInputRef: ElementRef;
+  @ViewChild('numberInput', { static: true }) numberInputRef: ElementRef;
 
-  @Output()  ingredientAdded= new EventEmitter<Ingredient>()
+  constructor(private shoppingListService: ShoppingListService) {}
 
-  onAddClick()
-  {
-    const newIngredient= new Ingredient(this.nameInputRef.nativeElement.value,this.numberInputRef.nativeElement.value)
-    this.ingredientAdded.emit(newIngredient)
+  onAddClick() {
+    const newIngredient = new Ingredient(
+      this.nameInputRef.nativeElement.value,
+      this.numberInputRef.nativeElement.value
+    );
+    this.shoppingListService.addIngredient(newIngredient);
   }
-
 }
