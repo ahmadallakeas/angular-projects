@@ -14,4 +14,5 @@ export class RecipeItemComponent implements OnInit {
   ngOnInit() {
     this.recipe = this.recipesService.getRecipe(this.index);
   }
+
 }
