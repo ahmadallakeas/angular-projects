@@ -1,0 +1,14 @@
+.container {
+  margin-top: 50px;
+}
+
+.list-group-item {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+.badge
+{
+  height: 20px;
+  margin-left: auto;
+}
