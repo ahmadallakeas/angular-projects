@@ -1,7 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ComponentFactoryResolver,
+  OnInit,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { AlertComponent } from '../shared/alert/alert.component';
+import { PlaceholderDirective } from '../shared/placeholder/placeholder.directive';
 import { AuthResponseData, AuthService } from './auth.service';
 
 @Component({
@@ -14,8 +22,14 @@ export class AuthComponent implements OnInit {
   isLoading = false;
   errorMessage: string = null;
   @ViewChild('form') form: NgForm;
+  @ViewChild(PlaceholderDirective, { static: false })
+  placeholder: PlaceholderDirective;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private viewContainerRef: ViewContainerRef
+  ) {}
 
   ngOnInit(): void {}
   onSwitchMode() {
@@ -43,7 +57,21 @@ export class AuthComponent implements OnInit {
       error: (error) => {
         this.isLoading = false;
         this.errorMessage = error;
+        this.showErrorAlert(error);
       },
     });
+  }
+  private showErrorAlert(error: string) {
+    const containerRef = this.placeholder.viewContainerRef;
+    containerRef.clear();
+    const component = containerRef.createComponent(AlertComponent);
+    component.instance.message = error;
+    const event = component.instance.closed.subscribe(() => {
+      event.unsubscribe();
+      containerRef.clear();
+    });
+  }
+  onCloseError() {
+    this.errorMessage = null;
   }
 }
