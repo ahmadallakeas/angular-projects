@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
 import { Recipe } from './recipe.model';
 import { RecipesService } from './recipes.service';
 
@@ -11,14 +12,12 @@ import { RecipesService } from './recipes.service';
 export class RecipesComponent implements OnInit, OnDestroy {
   clickedRecipe: Recipe;
 
-  constructor(private recipesService: RecipesService) {}
+  constructor(private recipesService: RecipesService,private authService:AuthService) {}
   private selectedRecipeSub: Subscription;
   ngOnInit() {
-    // this.selectedRecipeSub = this.recipesService.selectedRecipe.subscribe(
-    //   (recipe: Recipe) => (this.clickedRecipe = recipe)
-    // );
+    this.authService.autoLogin()
+
   }
   ngOnDestroy() {
-  //  this.selectedRecipeSub.unsubscribe();
   }
 }
