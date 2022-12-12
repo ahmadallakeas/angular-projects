@@ -15,7 +15,7 @@ export class RecipesComponent implements OnInit, OnDestroy {
   constructor(private recipesService: RecipesService,private authService:AuthService) {}
   private selectedRecipeSub: Subscription;
   ngOnInit() {
-    this.authService.autoLogin()
+
 
   }
   ngOnDestroy() {
