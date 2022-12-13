@@ -5,12 +5,15 @@ export interface State {
   user: User;
   errorMessage: string;
   loading: boolean;
+
 }
 
 const intialState: State = {
   user: null,
   errorMessage: null,
   loading: false,
+
+
 };
 
 export function authReducer(

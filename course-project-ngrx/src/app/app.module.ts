@@ -13,6 +13,7 @@ import { AuthEffects } from './auth/store/auth.effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { Environment } from 'src/environments/environment';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
+import { RecipesEffects } from './recipes/store/recipes.effects';
 
 @NgModule({
   declarations: [AppComponent, HeaderComponent],
@@ -24,7 +25,7 @@ import { StoreRouterConnectingModule } from '@ngrx/router-store';
     StoreRouterConnectingModule.forRoot(),
     HttpClientModule,
     SharedModule,
-    EffectsModule.forRoot([AuthEffects]),
+    EffectsModule.forRoot([AuthEffects,RecipesEffects]),
   ],
   providers: [
     {

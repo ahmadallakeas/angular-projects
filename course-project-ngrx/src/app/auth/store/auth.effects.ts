@@ -22,6 +22,7 @@ const handleAuthentication = (
     userId: userId,
     token: token,
     expirationDate: date,
+    redirect: true,
   });
 };
 
@@ -128,10 +129,9 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(AuthActions.LOGOUT),
         tap(() => {
-          this.authService.clearTokenTimeout()
+          this.authService.clearTokenTimeout();
           localStorage.removeItem('userData');
           this.router.navigate(['/auth']);
-
         })
       ),
     { dispatch: false }
@@ -167,6 +167,7 @@ export class AuthEffects {
               userId: user.id,
               token: user.token,
               expirationDate: new Date(userData._tokenExpirationDate),
+              redirect: false,
             });
           }
           return { type: 'DUMMY' };
@@ -178,8 +179,10 @@ export class AuthEffects {
     () =>
       this.actions$.pipe(
         ofType(AuthActions.AUTHENTICATE_SUCCESS),
-        tap(() => {
-          this.router.navigate(['/']);
+        tap((authLoginSuccess: AuthActions.AuthenticateSuccess) => {
+          if (authLoginSuccess.payload.redirect) {
+            this.router.navigate(['/']);
+          }
         })
       ),
     { dispatch: false }

@@ -1,25 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Ingredient } from 'src/app/shared/ingredient.model';
 import { Recipe } from '../recipe.model';
-import { RecipesService } from '../recipes.service';
+import * as fromApp from '../../store/app.reducer';
+import { Store } from '@ngrx/store';
+import { map, Subscription } from 'rxjs';
+import * as RecipesActions from '../store/recipes.actions';
 
 @Component({
   selector: 'app-recipes-edit',
   templateUrl: './recipes-edit.component.html',
   styleUrls: ['./recipes-edit.component.css'],
 })
-export class RecipesEditComponent implements OnInit {
+export class RecipesEditComponent implements OnInit, OnDestroy {
   id: number;
   editMode = false;
   recipeForm: FormGroup;
+  storeSub: Subscription;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private recipeService: RecipesService
+    private store: Store<fromApp.AppState>
   ) {}
+  ngOnDestroy(): void {
+    if (this.storeSub) {
+      this.storeSub.unsubscribe();
+    }
+  }
   ngOnInit() {
     this.route.params.subscribe((params) => {
       this.id = +params['id'];
@@ -34,26 +43,38 @@ export class RecipesEditComponent implements OnInit {
     let recipeDescription = '';
     let ingredients = new FormArray([]);
     if (this.editMode) {
-      const recipe = this.recipeService.getRecipe(this.id);
-      recipeName = recipe.name;
-      recipeImage = recipe.imageUrl;
-      recipeDescription = recipe.description;
-      if (recipe.ingredients) {
-        for (let ingredient of recipe.ingredients) {
-          ingredients.push(
-            new FormGroup({
-              ingredientName: new FormControl(
-                ingredient.name,
-                Validators.required
-              ),
-              ingredientAmount: new FormControl(ingredient.amount, [
-                Validators.required,
-                Validators.pattern(/[1-9]+[0-9]*/),
-              ]),
-            })
-          );
-        }
-      }
+      this.storeSub = this.store
+        .select('recipes')
+        .pipe(
+          map((recipesState) => {
+            return recipesState.recipes.find((recipe, index) => {
+              return index == this.id;
+            });
+          })
+        )
+        .subscribe({
+          next: (recipe) => {
+            recipeName = recipe.name;
+            recipeImage = recipe.imageUrl;
+            recipeDescription = recipe.description;
+            if (recipe.ingredients) {
+              for (let ingredient of recipe.ingredients) {
+                ingredients.push(
+                  new FormGroup({
+                    ingredientName: new FormControl(
+                      ingredient.name,
+                      Validators.required
+                    ),
+                    ingredientAmount: new FormControl(ingredient.amount, [
+                      Validators.required,
+                      Validators.pattern(/[1-9]+[0-9]*/),
+                    ]),
+                  })
+                );
+              }
+            }
+          },
+        });
     }
     this.recipeForm = new FormGroup({
       name: new FormControl(recipeName, Validators.required),
@@ -81,9 +102,15 @@ export class RecipesEditComponent implements OnInit {
       ingredients
     );
     if (this.editMode) {
-      this.recipeService.updateRecipe(this.id, recipe);
+      // this.recipeService.updateRecipe(this.id, recipe);
+      this.store.dispatch(
+        new RecipesActions.UpdateRecipe({
+          index: this.id,
+          newRecipe: recipe,
+        })
+      );
     } else {
-      this.recipeService.addRecipe(recipe);
+      this.store.dispatch(new RecipesActions.AddRecipe(recipe));
     }
     this.router.navigate(['..'], { relativeTo: this.route });
   }
@@ -101,8 +128,7 @@ export class RecipesEditComponent implements OnInit {
   onCancel() {
     this.router.navigate(['..'], { relativeTo: this.route });
   }
-  removeIngredient(index:number)
-  {
-    (<FormArray>this.recipeForm.get('recipeIngredients')).removeAt(index)
+  removeIngredient(index: number) {
+    (<FormArray>this.recipeForm.get('recipeIngredients')).removeAt(index);
   }
 }
