@@ -1,0 +1,11 @@
+<a class="list-group-item clearfix" style="padding: 3px;cursor: pointer;" routerLinkActive="active" [routerLink]="[index]">
+  <div class="row">
+    <div class="col-9">
+      <h4 class="list-group-item-heading">{{ recipe.name }}</h4>
+      <p class="list-group-item-text">{{ recipe.description }}</p>
+    </div>
+    <div class="col-3">
+      <img [src]="recipe.imageUrl" alt="" class="img-fluid" />
+    </div>
+  </div>
+</a>
