@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "angular-cli-practice": {
+      "hosting": {
+        "angular-cli-practice": [
+          "angular-cli-practice"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "angular-cli-practice"
+  }
+}
